@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="80" fill="#C0202A"/>
+  <rect x="30" y="30" width="452" height="452" rx="60" fill="none" stroke="#D4A017" stroke-width="8"/>
+  <text x="256" y="200" font-family="serif" font-size="160" text-anchor="middle" fill="#D4A017">店</text>
+  <text x="256" y="360" font-family="serif" font-size="100" text-anchor="middle" fill="#F0C84A">小二</text>
+</svg>
