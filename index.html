@@ -15,94 +15,53 @@
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 :root{
   --red:#C0202A;--red-dark:#8B1218;--red-deep:#6B0D13;
-  --gold:#D4A017;--gold-light:#F0C84A;--gold-pale:#FFF8E7;
+  --gold:#D4A017;--gold-light:#F0C84A;
   --cream:#FDF6E3;--text-dark:#2A0A0A;--text-mid:#7A3A3A;--text-light:#B07070;
 }
 html,body{height:100%;overflow:hidden;}
-body{
-  font-family:'Noto Serif SC','PingFang SC','Helvetica Neue',sans-serif;
-  background:var(--red-deep);
-  display:flex;flex-direction:column;
-  height:100vh;height:100dvh;
-}
+body{font-family:'Noto Serif SC','PingFang SC','Helvetica Neue',sans-serif;background:var(--red-deep);display:flex;flex-direction:column;height:100vh;height:100dvh;}
 
-/* 声音解锁遮罩 */
-.unlock-overlay{
-  position:fixed;inset:0;
-  background:rgba(107,13,19,0.97);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  z-index:999;gap:20px;
-  padding:30px;
-}
+/* 解锁页 */
+.unlock-overlay{position:fixed;inset:0;background:var(--red-deep);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:999;gap:16px;padding:30px;}
 .unlock-overlay.hidden{display:none;}
-.unlock-title{font-size:22px;font-weight:700;color:var(--gold-light);letter-spacing:3px;text-align:center;}
-.unlock-sub{font-size:14px;color:rgba(240,200,74,0.7);text-align:center;line-height:1.8;}
-.unlock-btn{
-  background:linear-gradient(135deg,var(--gold),var(--gold-light));
-  color:var(--red-deep);border:none;border-radius:50px;
-  padding:16px 48px;font-size:18px;font-weight:700;
-  font-family:inherit;cursor:pointer;letter-spacing:2px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.4);
-}
-.unlock-btn:active{transform:scale(0.97);}
-.unlock-icon{font-size:64px;}
+.unlock-icon{font-size:72px;animation:bounce 1.5s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-12px);}}
+.unlock-title{font-size:26px;font-weight:700;color:var(--gold-light);letter-spacing:4px;}
+.unlock-sub{font-size:14px;color:rgba(240,200,74,0.65);text-align:center;line-height:2;}
+.unlock-btn{margin-top:8px;background:linear-gradient(135deg,var(--gold),var(--gold-light));color:var(--red-deep);border:none;border-radius:50px;padding:18px 56px;font-size:20px;font-weight:700;font-family:inherit;cursor:pointer;letter-spacing:3px;box-shadow:0 6px 24px rgba(0,0,0,0.4);}
+.unlock-btn:active{transform:scale(0.96);}
 
-.top-bar{
-  background:linear-gradient(135deg,var(--red-dark),var(--red));
-  padding:env(safe-area-inset-top,14px) 20px 10px;
-  padding-top:calc(env(safe-area-inset-top,0px) + 14px);
-  text-align:center;border-bottom:2px solid var(--gold);flex-shrink:0;
-}
-.store-name{font-size:20px;font-weight:700;color:var(--gold-light);letter-spacing:4px;text-shadow:0 1px 4px rgba(0,0,0,0.4);}
+/* 顶部 */
+.top-bar{background:linear-gradient(135deg,var(--red-dark),var(--red));padding-top:calc(env(safe-area-inset-top,0px) + 14px);padding-bottom:10px;padding-left:20px;padding-right:20px;text-align:center;border-bottom:2px solid var(--gold);flex-shrink:0;}
+.store-name{font-size:20px;font-weight:700;color:var(--gold-light);letter-spacing:4px;}
 .store-sub{font-size:11px;color:rgba(240,200,74,0.7);letter-spacing:2px;margin-top:2px;}
 
 .scroll-area{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 14px calc(env(safe-area-inset-bottom,0px) + 20px);}
 .inner{max-width:440px;margin:0 auto;}
 
-.mascot-area{text-align:center;margin-bottom:12px;margin-top:12px;}
-.mascot{
-  width:72px;height:72px;border-radius:50%;
-  background:linear-gradient(135deg,var(--red),var(--red-dark));
-  border:3px solid var(--gold);
-  display:inline-flex;align-items:center;justify-content:center;
-  font-size:36px;box-shadow:0 4px 16px rgba(0,0,0,0.35);margin-bottom:8px;
+/* 结果大显示 */
+.result-big{
+  background:linear-gradient(135deg,rgba(139,18,24,0.9),rgba(107,13,19,0.9));
+  border:2px solid var(--gold);border-radius:20px;
+  text-align:center;padding:20px 16px;margin-bottom:14px;margin-top:12px;
+  min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  box-shadow:0 4px 20px rgba(0,0,0,0.4);
+  transition:all 0.3s;
 }
-.mascot.talking{animation:bobble 0.4s ease-in-out infinite alternate;}
-@keyframes bobble{from{transform:translateY(0) scale(1);}to{transform:translateY(-4px) scale(1.04);}}
+.result-idle{font-size:15px;color:rgba(240,200,74,0.6);letter-spacing:2px;}
+.result-product-name{font-size:18px;color:var(--gold-light);margin-bottom:6px;letter-spacing:2px;}
+.result-price-big{font-size:64px;font-weight:700;color:white;line-height:1;text-shadow:0 2px 12px rgba(0,0,0,0.5);}
+.result-price-unit{font-size:20px;color:rgba(255,255,255,0.8);}
+.result-notfound{font-size:16px;color:rgba(240,200,74,0.7);letter-spacing:1px;}
+.result-notfound span{font-size:13px;display:block;margin-top:6px;color:rgba(240,200,74,0.45);}
 
-.speech-bubble{
-  display:flex;align-items:center;justify-content:center;
-  background:var(--cream);border:1.5px solid var(--gold);
-  border-radius:16px;padding:10px 16px;
-  max-width:290px;margin:0 auto;min-height:52px;
-  box-shadow:0 2px 12px rgba(0,0,0,0.2);position:relative;
-}
-.speech-bubble::before{content:'';position:absolute;top:-10px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:var(--gold);}
-.speech-bubble::after{content:'';position:absolute;top:-8px;left:50%;transform:translateX(-50%);border:5px solid transparent;border-bottom-color:var(--cream);}
-.bubble-text{font-size:14px;color:var(--text-dark);text-align:center;line-height:1.5;}
-.bubble-price{font-size:40px;font-weight:700;color:var(--red);line-height:1.1;}
-.bubble-product{font-size:13px;color:var(--text-mid);margin-bottom:2px;}
-
+/* 麦克风 */
 .mic-section{text-align:center;margin-bottom:14px;}
-.mic-outer{
-  width:100px;height:100px;border-radius:50%;
-  background:rgba(212,160,23,0.1);border:1.5px solid rgba(212,160,23,0.25);
-  display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px;
-}
-.mic-btn{
-  width:80px;height:80px;border-radius:50%;border:none;
-  background:linear-gradient(135deg,var(--gold),var(--gold-light));
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.35);
-  transition:transform 0.1s;user-select:none;-webkit-user-select:none;touch-action:none;
-}
+.mic-outer{width:100px;height:100px;border-radius:50%;background:rgba(212,160,23,0.1);border:1.5px solid rgba(212,160,23,0.25);display:inline-flex;align-items:center;justify-content:center;margin-bottom:8px;}
+.mic-btn{width:80px;height:80px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,0.35);user-select:none;-webkit-user-select:none;touch-action:none;transition:transform 0.1s;}
 .mic-btn:active,.mic-btn.listening{transform:scale(0.94);}
 .mic-btn.listening{animation:glow 1s infinite;}
-@keyframes glow{
-  0%,100%{box-shadow:0 4px 16px rgba(0,0,0,0.35),0 0 0 0 rgba(212,160,23,0.5);}
-  50%{box-shadow:0 4px 16px rgba(0,0,0,0.35),0 0 0 16px rgba(212,160,23,0);}
-}
+@keyframes glow{0%,100%{box-shadow:0 4px 16px rgba(0,0,0,0.35),0 0 0 0 rgba(212,160,23,0.5);}50%{box-shadow:0 4px 16px rgba(0,0,0,0.35),0 0 0 16px rgba(212,160,23,0);}}
 .mic-label{font-size:13px;color:rgba(240,200,74,0.8);letter-spacing:1px;}
 .transcript{font-size:12px;color:rgba(240,200,74,0.6);font-style:italic;min-height:16px;margin-top:3px;}
 .status{font-size:11px;color:rgba(240,200,74,0.45);min-height:14px;margin-top:2px;}
@@ -111,11 +70,11 @@ body{
 .divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
 .divider-diamond{width:7px;height:7px;background:var(--gold);transform:rotate(45deg);flex-shrink:0;}
 
+/* 商品管理 */
 .mgmt-card{background:rgba(253,246,227,0.97);border-radius:16px;border:1.5px solid var(--gold);overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,0.3);}
 .mgmt-header{background:linear-gradient(135deg,var(--red),var(--red-dark));padding:9px 14px;display:flex;align-items:center;justify-content:space-between;}
 .mgmt-title{font-size:13px;font-weight:600;color:var(--gold-light);letter-spacing:2px;}
 .count-badge{font-size:11px;background:rgba(212,160,23,0.25);color:var(--gold-light);padding:2px 9px;border-radius:999px;border:0.5px solid rgba(212,160,23,0.4);}
-
 .product-list{max-height:200px;overflow-y:auto;padding:8px 10px;display:flex;flex-direction:column;gap:6px;}
 .product-item{display:flex;align-items:center;gap:8px;background:white;border:0.5px solid rgba(212,160,23,0.3);border-radius:10px;padding:8px 10px;}
 .item-icon{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--red-dark));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--gold-light);flex-shrink:0;}
@@ -126,38 +85,26 @@ body{
 .del-btn{background:none;border:none;color:#ccc;cursor:pointer;font-size:20px;padding:0 2px;line-height:1;}
 .del-btn:active{color:var(--red);}
 .no-products{text-align:center;color:var(--text-light);font-size:13px;padding:18px;}
-
 .add-section{border-top:1px solid rgba(212,160,23,0.2);padding:10px;}
 .add-label{font-size:11px;color:var(--text-mid);letter-spacing:1px;margin-bottom:7px;display:flex;align-items:center;gap:6px;}
 .add-label::before,.add-label::after{content:'';flex:1;height:0.5px;background:rgba(212,160,23,0.3);}
 .add-row{display:flex;gap:7px;margin-bottom:7px;}
-.add-row input,.alias-row input{
-  flex:1;border:1px solid rgba(212,160,23,0.35);border-radius:10px;
-  padding:9px 11px;font-size:14px;background:white;color:var(--text-dark);
-  outline:none;font-family:inherit;-webkit-appearance:none;
-}
+.add-row input,.alias-row input{flex:1;border:1px solid rgba(212,160,23,0.35);border-radius:10px;padding:9px 11px;font-size:14px;background:white;color:var(--text-dark);outline:none;font-family:inherit;-webkit-appearance:none;}
 .add-row input:focus,.alias-row input:focus{border-color:var(--red);}
 .price-input{max-width:86px!important;flex:none!important;}
 .alias-row{display:flex;gap:7px;}
-.add-btn{
-  background:linear-gradient(135deg,var(--red),var(--red-dark));
-  color:var(--gold-light);border:none;border-radius:10px;
-  padding:9px 14px;font-size:14px;font-weight:600;cursor:pointer;
-  font-family:inherit;letter-spacing:1px;white-space:nowrap;
-  box-shadow:0 2px 8px rgba(0,0,0,0.25);
-}
+.add-btn{background:linear-gradient(135deg,var(--red),var(--red-dark));color:var(--gold-light);border:none;border-radius:10px;padding:9px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:1px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,0.25);}
 .add-btn:active{opacity:0.85;}
 .tip{text-align:center;font-size:10px;color:rgba(212,160,23,0.4);margin-top:14px;letter-spacing:1px;line-height:1.8;}
 </style>
 </head>
 <body>
 
-<!-- 首次点击解锁声音 -->
 <div class="unlock-overlay" id="unlockOverlay">
   <div class="unlock-icon">🧑‍🍳</div>
   <div class="unlock-title">智能店小二</div>
-  <div class="unlock-sub">点击下方按钮启动<br>（iOS 需要手动开启声音）</div>
-  <button class="unlock-btn" id="unlockBtn">开始使用</button>
+  <div class="unlock-sub">点击启动应用<br>开启语音报价功能</div>
+  <button class="unlock-btn" id="unlockBtn">开始营业</button>
 </div>
 
 <div class="top-bar">
@@ -168,11 +115,9 @@ body{
 <div class="scroll-area">
 <div class="inner">
 
-  <div class="mascot-area">
-    <div><div class="mascot" id="mascot">🧑‍🍳</div></div>
-    <div class="speech-bubble" id="bubble">
-      <span class="bubble-text" id="bubbleText">老板，有什么要查的？</span>
-    </div>
+  <!-- 大字价格显示 -->
+  <div class="result-big" id="resultBig">
+    <div class="result-idle" id="resultContent">按住麦克风，说出商品名称</div>
   </div>
 
   <div class="mic-section">
@@ -188,7 +133,7 @@ body{
     </div>
     <div class="mic-label">按住说话，松开查价</div>
     <div class="transcript" id="transcript"></div>
-    <div class="status" id="statusBar">准备就绪</div>
+    <div class="status" id="statusBar"></div>
   </div>
 
   <div class="divider"><div class="divider-line"></div><div class="divider-diamond"></div><div class="divider-line"></div></div>
@@ -216,20 +161,90 @@ body{
 </div>
 
 <script>
-const STORAGE_KEY='shopXiao_v3';
-let ttsUnlocked=false;
+const STORAGE_KEY='shopXiao_v4';
+let audioCtx=null;
 
-// iOS TTS 解锁：必须在用户点击事件里触发一次 speak
+// ── 数字转中文 ──
+function numToChinese(n){
+  n=Math.round(n*100)/100;
+  const yi=['','一','二','三','四','五','六','七','八','九'];
+  const dw=['','十','百','千'];
+  if(n===0)return'零';
+  let s='';
+  const yuan=Math.floor(n);
+  const fen=Math.round((n-yuan)*100);
+  const jiao=Math.floor(fen/10);
+  const fen2=fen%10;
+  if(yuan>0){
+    if(yuan<10)s+=yi[yuan];
+    else if(yuan<100)s+=(yuan>=20?yi[Math.floor(yuan/10)]:'')+'十'+(yuan%10?yi[yuan%10]:'');
+    else s+=yi[Math.floor(yuan/100)]+'百'+(yuan%100<10&&yuan%100>0?'零':'')+(yuan%100?numToChinese(yuan%100):'');
+    s+='元';
+  }
+  if(jiao>0){s+=yi[jiao]+'角';}
+  if(fen2>0){s+=yi[fen2]+'分';}
+  if(jiao===0&&fen2===0&&yuan>0)s+='整';
+  return s;
+}
+
+// ── Web Audio 合成语音 ──
+// 用振荡器生成简单提示音，配合大字显示
+function playBeep(type='found'){
+  if(!audioCtx)return;
+  const osc=audioCtx.createOscillator();
+  const gain=audioCtx.createGain();
+  osc.connect(gain);gain.connect(audioCtx.destination);
+  if(type==='found'){
+    osc.frequency.setValueAtTime(523,audioCtx.currentTime);
+    osc.frequency.setValueAtTime(659,audioCtx.currentTime+0.12);
+    osc.frequency.setValueAtTime(784,audioCtx.currentTime+0.24);
+    gain.gain.setValueAtTime(0.3,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.5);
+    osc.start();osc.stop(audioCtx.currentTime+0.5);
+  } else {
+    osc.frequency.setValueAtTime(300,audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.2,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001,audioCtx.currentTime+0.3);
+    osc.start();osc.stop(audioCtx.currentTime+0.3);
+  }
+}
+
+// ── TTS 播报（多重保险）──
+function speak(text){
+  // 1. 先播提示音（Web Audio，iOS 无限制）
+  playBeep('found');
+  // 2. 同时尝试 TTS
+  if(!window.speechSynthesis)return;
+  speechSynthesis.cancel();
+  function doSpeak(){
+    const u=new SpeechSynthesisUtterance(text);
+    u.lang='zh-CN';u.rate=0.9;u.pitch=1.1;u.volume=1;
+    // 选择中文语音
+    const voices=speechSynthesis.getVoices();
+    const zhVoice=voices.find(v=>v.lang.startsWith('zh')&&v.localService)||
+                  voices.find(v=>v.lang.startsWith('zh'));
+    if(zhVoice)u.voice=zhVoice;
+    speechSynthesis.speak(u);
+  }
+  // iOS 需要延迟
+  if(speechSynthesis.getVoices().length>0){doSpeak();}
+  else{speechSynthesis.onvoiceschanged=doSpeak;}
+}
+
+// ── 解锁（必须在用户点击里初始化 AudioContext）──
 document.getElementById('unlockBtn').addEventListener('click',()=>{
-  // 用一个无声的utterance来解锁TTS上下文
-  const u=new SpeechSynthesisUtterance(' ');
-  u.volume=0;
-  u.onend=()=>{ttsUnlocked=true;};
-  speechSynthesis.speak(u);
+  // 初始化 AudioContext
+  audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+  // 解锁 TTS
+  const u=new SpeechSynthesisUtterance('');
+  u.volume=0;speechSynthesis.speak(u);
+  // 播一声欢迎音
+  setTimeout(()=>playBeep('found'),200);
   document.getElementById('unlockOverlay').classList.add('hidden');
   setStatus('准备就绪，按住麦克风问价');
 });
 
+// ── 商品数据 ──
 let products=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||[
   {id:1,name:'可乐',aliases:['可口可乐','百事','cola'],price:3},
   {id:2,name:'矿泉水',aliases:['水','纯净水','瓶装水'],price:2},
@@ -239,23 +254,27 @@ let products=JSON.parse(localStorage.getItem(STORAGE_KEY)||'null')||[
 ];
 function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(products));}
 
-const PHRASES=['好嘞，马上来！','您稍等，小的查查！','没问题，给您报价！','马上马上！','小的这就查！'];
-
-function setBubble(html,talking=false){
-  document.getElementById('bubbleText').innerHTML=html;
-  document.getElementById('mascot').classList.toggle('talking',talking);
-}
-function showIdle(){setBubble('老板，有什么要查的？',false);}
-function showListening(){setBubble('说吧，我在听呢...',true);}
 function showResult(p){
-  const g=PHRASES[Math.floor(Math.random()*PHRASES.length)];
-  setBubble(`<div style="text-align:center"><div style="font-size:11px;color:#B07070;margin-bottom:2px">${g}</div><div class="bubble-product">${p.name}</div><div class="bubble-price">¥${Number(p.price).toFixed(2)}</div></div>`,true);
-  speak(`${p.name}，${p.price}块钱`);
-  setTimeout(()=>document.getElementById('mascot').classList.remove('talking'),2500);
+  const priceText=numToChinese(p.price);
+  document.getElementById('resultContent').innerHTML=`
+    <div class="result-product-name">${p.name}</div>
+    <div class="result-price-big">¥${Number(p.price).toFixed(2)}</div>
+    <div class="result-price-unit">${priceText}</div>`;
+  speak(`${p.name}，${priceText}`);
 }
+
 function showNotFound(t){
-  setBubble(`<div style="text-align:center;font-size:13px;color:#7A3A3A">哎呀，没找到"${t}"<br><span style="font-size:11px;color:#B07070">请先在下方添加</span></div>`,false);
-  speak('这个商品还没录入，请先添加一下');
+  document.getElementById('resultContent').innerHTML=`
+    <div class="result-notfound">没找到「${t}」<span>请在下方添加此商品</span></div>`;
+  playBeep('notfound');
+}
+
+function showIdle(){
+  document.getElementById('resultContent').innerHTML=`<div class="result-idle">按住麦克风，说出商品名称</div>`;
+}
+
+function showListening(){
+  document.getElementById('resultContent').innerHTML=`<div class="result-idle" style="color:var(--gold-light)">正在听...</div>`;
 }
 
 function renderList(){
@@ -273,6 +292,7 @@ function renderList(){
       <button class="del-btn" onclick="del(${p.id})">×</button>
     </div>`).join('');
 }
+
 function del(id){if(!confirm('确认删除？'))return;products=products.filter(p=>p.id!==id);save();renderList();}
 
 document.getElementById('addBtn').addEventListener('click',()=>{
@@ -301,24 +321,16 @@ function findProduct(t){
   return null;
 }
 
-function speak(text){
-  if(!window.speechSynthesis)return;
-  speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(text);
-  u.lang='zh-CN';u.rate=0.95;u.pitch=1.05;u.volume=1;
-  // iOS 有时需要延迟才能播放
-  setTimeout(()=>speechSynthesis.speak(u),100);
-}
-
+// ── 语音识别 ──
 const micBtn=document.getElementById('micBtn');
 let recognition=null,isListening=false;
 const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-if(!SR){setStatus('请用 Safari 打开以使用语音功能');}
+if(!SR)setStatus('请用 Safari 打开以使用语音功能');
 
 function createRec(){
   const r=new SR();
   r.lang='zh-CN';r.continuous=false;r.interimResults=true;r.maxAlternatives=3;
-  r.onstart=()=>{isListening=true;micBtn.classList.add('listening');showListening();setStatus('正在听...');document.getElementById('transcript').textContent='';};
+  r.onstart=()=>{isListening=true;micBtn.classList.add('listening');showListening();document.getElementById('transcript').textContent='';};
   r.onresult=(e)=>{
     let interim='',final='';
     for(let i=e.resultIndex;i<e.results.length;i++){
@@ -335,7 +347,7 @@ function createRec(){
     }
   };
   r.onerror=(e)=>{
-    const m={'not-allowed':'请允许麦克风权限','no-speech':'没听到声音，请重试','network':'网络错误'};
+    const m={'not-allowed':'请允许麦克风权限','no-speech':'没听到声音，请重试'};
     setStatus(m[e.error]||'识别出错，请重试');
     micBtn.classList.remove('listening');isListening=false;showIdle();
   };
@@ -343,7 +355,7 @@ function createRec(){
   return r;
 }
 
-function startListen(){if(!SR||isListening)return;recognition=createRec();try{recognition.start();}catch(e){setStatus('启动失败，请重试');}}
+function startListen(){if(!SR||isListening)return;recognition=createRec();try{recognition.start();}catch(e){setStatus('请重试');}}
 function stopListen(){if(recognition&&isListening)try{recognition.stop();}catch(e){}}
 
 micBtn.addEventListener('mousedown',startListen);
@@ -352,10 +364,7 @@ micBtn.addEventListener('mouseleave',stopListen);
 micBtn.addEventListener('touchstart',e=>{e.preventDefault();startListen();},{passive:false});
 micBtn.addEventListener('touchend',e=>{e.preventDefault();stopListen();},{passive:false});
 
-if('serviceWorker' in navigator){
-  navigator.serviceWorker.register('sw.js').catch(()=>{});
-}
-
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
 renderList();
 </script>
 </body>
