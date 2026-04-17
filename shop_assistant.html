@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="店小二">
+<title>智能店小二</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+
+:root{
+  --red:#C0202A;
+  --red-dark:#8B1218;
+  --red-deep:#6B0D13;
+  --gold:#D4A017;
+  --gold-light:#F0C84A;
+  --gold-pale:#FFF8E7;
+  --cream:#FDF6E3;
+  --text-dark:#2A0A0A;
+  --text-mid:#7A3A3A;
+  --text-light:#B07070;
+}
+
+body{
+  font-family:'Noto Serif SC','PingFang SC','Helvetica Neue',sans-serif;
+  background: var(--red-deep);
+  min-height:100vh;
+  position:relative;
+  overflow-x:hidden;
+}
+
+/* 背景纹理 */
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(212,160,23,0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(212,160,23,0.06) 0%, transparent 50%);
+  pointer-events:none;
+}
+
+/* 顶部装饰条 */
+.top-bar{
+  background: linear-gradient(135deg, var(--red-dark), var(--red));
+  padding: 14px 20px 10px;
+  text-align:center;
+  border-bottom: 2px solid var(--gold);
+  position:relative;
+}
+.top-bar::after{
+  content:'';
+  position:absolute;
+  bottom:-6px; left:0; right:0;
+  height:4px;
+  background: linear-gradient(90deg, transparent, var(--gold-light), transparent);
+}
+
+.store-name{
+  font-size:22px;
+  font-weight:700;
+  color:var(--gold-light);
+  letter-spacing:4px;
+  text-shadow:0 1px 4px rgba(0,0,0,0.4);
+}
+.store-sub{
+  font-size:11px;
+  color:rgba(240,200,74,0.7);
+  letter-spacing:2px;
+  margin-top:2px;
+}
+
+/* 主体 */
+.app{
+  max-width:440px;
+  margin:0 auto;
+  padding:20px 16px 40px;
+}
+
+/* 店小二角色区 */
+.mascot-area{
+  text-align:center;
+  margin-bottom:16px;
+}
+
+.mascot{
+  width:80px; height:80px;
+  border-radius:50%;
+  background: linear-gradient(135deg, var(--red), var(--red-dark));
+  border:3px solid var(--gold);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  font-size:40px;
+  box-shadow:0 4px 16px rgba(0,0,0,0.35);
+  margin-bottom:8px;
+  position:relative;
+}
+.mascot.talking{
+  animation: bobble 0.4s ease-in-out infinite alternate;
+}
+@keyframes bobble{
+  from{transform:translateY(0) scale(1);}
+  to{transform:translateY(-4px) scale(1.04);}
+}
+
+.speech-bubble{
+  display:inline-block;
+  background:var(--cream);
+  border:1.5px solid var(--gold);
+  border-radius:16px;
+  padding:10px 16px;
+  font-size:15px;
+  color:var(--text-dark);
+  max-width:280px;
+  line-height:1.5;
+  position:relative;
+  box-shadow:0 2px 12px rgba(0,0,0,0.2);
+  min-height:44px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin:0 auto;
+}
+.speech-bubble::before{
+  content:'';
+  position:absolute;
+  top:-10px; left:50%;
+  transform:translateX(-50%);
+  border:5px solid transparent;
+  border-bottom-color:var(--gold);
+}
+.speech-bubble::after{
+  content:'';
+  position:absolute;
+  top:-8px; left:50%;
+  transform:translateX(-50%);
+  border:5px solid transparent;
+  border-bottom-color:var(--cream);
+}
+
+.bubble-text{font-size:15px;color:var(--text-dark);text-align:center;}
+.bubble-price{
+  font-size:36px;
+  font-weight:700;
+  color:var(--red);
+  text-align:center;
+  line-height:1.1;
+}
+.bubble-product{
+  font-size:14px;
+  color:var(--text-mid);
+  margin-bottom:2px;
+}
+.bubble-notfound{
+  font-size:14px;
+  color:var(--text-mid);
+  text-align:center;
+}
+
+/* 麦克风区 */
+.mic-section{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+.mic-outer{
+  width:110px; height:110px;
+  border-radius:50%;
+  background:rgba(212,160,23,0.12);
+  border:1.5px solid rgba(212,160,23,0.3);
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  margin-bottom:10px;
+}
+
+.mic-btn{
+  width:88px; height:88px;
+  border-radius:50%;
+  border:none;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  box-shadow:0 4px 16px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.3);
+  transition:transform 0.1s;
+  user-select:none;
+  -webkit-user-select:none;
+  touch-action:none;
+}
+.mic-btn:active,.mic-btn.listening{
+  transform:scale(0.95);
+  box-shadow:0 2px 8px rgba(0,0,0,0.35);
+}
+.mic-btn.listening{
+  animation:glow 1s infinite;
+}
+@keyframes glow{
+  0%,100%{box-shadow:0 4px 16px rgba(0,0,0,0.35),0 0 0 0 rgba(212,160,23,0.5);}
+  50%{box-shadow:0 4px 16px rgba(0,0,0,0.35),0 0 0 16px rgba(212,160,23,0);}
+}
+
+.mic-label{
+  font-size:13px;
+  color:rgba(240,200,74,0.8);
+  letter-spacing:1px;
+}
+.transcript{
+  font-size:12px;
+  color:rgba(240,200,74,0.55);
+  font-style:italic;
+  min-height:18px;
+  margin-top:4px;
+}
+.status{
+  font-size:12px;
+  color:rgba(240,200,74,0.55);
+  min-height:16px;
+  margin-top:2px;
+}
+
+/* 分隔线 */
+.divider{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin:4px 0 16px;
+}
+.divider-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);}
+.divider-diamond{
+  width:8px;height:8px;
+  background:var(--gold);
+  transform:rotate(45deg);
+  flex-shrink:0;
+}
+
+/* 商品管理 */
+.mgmt-card{
+  background:rgba(255,248,231,0.97);
+  border-radius:16px;
+  border:1.5px solid var(--gold);
+  overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,0.3);
+}
+
+.mgmt-header{
+  background: linear-gradient(135deg, var(--red), var(--red-dark));
+  padding:10px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+.mgmt-title{
+  font-size:14px;
+  font-weight:600;
+  color:var(--gold-light);
+  letter-spacing:2px;
+}
+.count-badge{
+  font-size:12px;
+  background:rgba(212,160,23,0.25);
+  color:var(--gold-light);
+  padding:2px 10px;
+  border-radius:999px;
+  border:0.5px solid rgba(212,160,23,0.4);
+}
+
+.product-list{
+  max-height:240px;
+  overflow-y:auto;
+  padding:8px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+.product-item{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  background:white;
+  border:0.5px solid rgba(212,160,23,0.3);
+  border-radius:10px;
+  padding:9px 12px;
+}
+.item-icon{
+  width:28px;height:28px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--red),var(--red-dark));
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:var(--gold-light);
+  flex-shrink:0;
+}
+.item-info{flex:1;min-width:0;}
+.item-name{font-size:15px;color:var(--text-dark);font-weight:500;}
+.item-aliases{font-size:11px;color:var(--text-light);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.item-price{font-size:16px;font-weight:700;color:var(--red);min-width:56px;text-align:right;}
+.del-btn{
+  background:none;border:none;
+  color:#ccc;cursor:pointer;
+  font-size:20px;padding:0 2px;line-height:1;
+}
+.del-btn:active{color:var(--red);}
+
+.no-products{text-align:center;color:var(--text-light);font-size:13px;padding:20px;}
+
+/* 添加商品 */
+.add-section{
+  border-top:1px solid rgba(212,160,23,0.2);
+  padding:12px;
+}
+.add-label{
+  font-size:12px;color:var(--text-mid);
+  letter-spacing:1px;margin-bottom:8px;
+  display:flex;align-items:center;gap:6px;
+}
+.add-label::before,.add-label::after{content:'';flex:1;height:0.5px;background:rgba(212,160,23,0.3);}
+
+.add-row{display:flex;gap:8px;margin-bottom:8px;}
+.add-row input,.alias-row input{
+  flex:1;
+  border:1px solid rgba(212,160,23,0.35);
+  border-radius:10px;
+  padding:9px 12px;
+  font-size:14px;
+  background:white;
+  color:var(--text-dark);
+  outline:none;
+  font-family:inherit;
+  -webkit-appearance:none;
+}
+.add-row input:focus,.alias-row input:focus{border-color:var(--red);}
+.price-input{max-width:90px!important;flex:none!important;}
+
+.alias-row{display:flex;gap:8px;}
+
+.add-btn{
+  background:linear-gradient(135deg,var(--red),var(--red-dark));
+  color:var(--gold-light);
+  border:none;
+  border-radius:10px;
+  padding:9px 16px;
+  font-size:14px;
+  font-weight:600;
+  cursor:pointer;
+  font-family:inherit;
+  letter-spacing:1px;
+  white-space:nowrap;
+  box-shadow:0 2px 8px rgba(0,0,0,0.25);
+}
+.add-btn:active{opacity:0.85;}
+
+.tip{
+  text-align:center;
+  font-size:11px;
+  color:rgba(212,160,23,0.45);
+  margin-top:20px;
+  letter-spacing:1px;
+  line-height:1.8;
+}
+
+/* 无语音支持 */
+.no-speech{
+  background:rgba(255,248,231,0.9);
+  border:1px solid var(--gold);
+  border-radius:12px;
+  padding:12px 14px;
+  font-size:13px;
+  color:var(--text-mid);
+  margin-bottom:14px;
+  line-height:1.7;
+  display:none;
+  text-align:center;
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="store-name">老板的杂货店</div>
+  <div class="store-sub">✦ 智能店小二 ✦</div>
+</div>
+
+<div class="app">
+
+  <div class="no-speech" id="noSpeechTip">
+    此浏览器不支持语音识别<br>
+    请用 <strong>Safari（iPhone）</strong> 或 <strong>Chrome（Android）</strong> 打开
+  </div>
+
+  <!-- 店小二 -->
+  <div class="mascot-area">
+    <div>
+      <div class="mascot" id="mascot">🧑‍🍳</div>
+    </div>
+    <div class="speech-bubble" id="bubble">
+      <span class="bubble-text" id="bubbleText">老板，有什么要查的？</span>
+    </div>
+  </div>
+
+  <!-- 麦克风 -->
+  <div class="mic-section">
+    <div class="mic-outer">
+      <button class="mic-btn" id="micBtn" title="按住说话">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#8B1218" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+      </button>
+    </div>
+    <div class="mic-label">按住说话，松开查价</div>
+    <div class="transcript" id="transcript"></div>
+    <div class="status" id="statusBar">准备就绪</div>
+  </div>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <div class="divider-diamond"></div>
+    <div class="divider-line"></div>
+  </div>
+
+  <!-- 商品管理 -->
+  <div class="mgmt-card">
+    <div class="mgmt-header">
+      <span class="mgmt-title">商品管理</span>
+      <span class="count-badge" id="countBadge">0 种</span>
+    </div>
+
+    <div class="product-list" id="productList"></div>
+
+    <div class="add-section">
+      <div class="add-label">添加商品</div>
+      <div class="add-row">
+        <input type="text" id="addName" placeholder="商品名称（如：可乐）" />
+        <input type="number" id="addPrice" placeholder="价格" class="price-input" min="0" step="0.1" inputmode="decimal" />
+      </div>
+      <div class="alias-row">
+        <input type="text" id="addAlias" placeholder="别名，逗号隔开（如：冰可乐,百事）可选" />
+        <button class="add-btn" id="addBtn">添加</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="tip">数据存于本地 · 无需网络<br>添加到主屏幕可快捷启动</p>
+</div>
+
+<script>
+const STORAGE_KEY = 'shopXiao_v1';
+
+let products = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null') || [
+  {id:1, name:'可乐', aliases:['可口可乐','百事','百事可乐','cola'], price:3},
+  {id:2, name:'矿泉水', aliases:['水','纯净水','瓶装水'], price:2},
+  {id:3, name:'面包', aliases:['吐司','切片面包','方包'], price:6},
+  {id:4, name:'鸡蛋', aliases:['蛋','土鸡蛋'], price:12},
+  {id:5, name:'牛奶', aliases:['纯牛奶','鲜奶','全脂牛奶'], price:8},
+];
+
+function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(products));}
+
+const PHRASES = [
+  '好嘞，马上来！',
+  '您稍等，小的查查！',
+  '没问题，给您报价！',
+  '马上马上！',
+];
+
+function getGreeting(name,price){
+  const p = PHRASES[Math.floor(Math.random()*PHRASES.length)];
+  return `${p}`;
+}
+
+function setBubble(html, talking=false){
+  document.getElementById('bubbleText').innerHTML = html;
+  const m = document.getElementById('mascot');
+  if(talking) m.classList.add('talking');
+  else m.classList.remove('talking');
+}
+
+function showIdle(){
+  setBubble('老板，有什么要查的？', false);
+}
+
+function showListening(){
+  setBubble('说吧，我在听呢...', true);
+}
+
+function showResult(product){
+  const greeting = getGreeting(product.name, product.price);
+  const html = `
+    <div style="text-align:center;">
+      <div class="bubble-text" style="font-size:12px;color:#B07070;margin-bottom:2px;">${greeting}</div>
+      <div class="bubble-product">${product.name}</div>
+      <div class="bubble-price">¥${Number(product.price).toFixed(2)}</div>
+    </div>`;
+  setBubble(html, true);
+  speak(`${product.name}，${product.price}块钱`);
+  setTimeout(()=>{
+    document.getElementById('mascot').classList.remove('talking');
+  }, 2000);
+}
+
+function showNotFound(text){
+  setBubble(`<div class="bubble-notfound">哎呀，没找到"${text}"<br><span style="font-size:12px;color:#B07070;">请检查是否已录入</span></div>`, false);
+  speak('这个商品没有录入，请先添加一下');
+}
+
+function renderList(){
+  const el = document.getElementById('productList');
+  document.getElementById('countBadge').textContent = products.length + ' 种';
+  if(!products.length){
+    el.innerHTML = '<div class="no-products">暂无商品，请在下方添加</div>';
+    return;
+  }
+  el.innerHTML = products.map(p=>{
+    const initial = p.name.charAt(0);
+    return `
+    <div class="product-item">
+      <div class="item-icon">${initial}</div>
+      <div class="item-info">
+        <div class="item-name">${p.name}</div>
+        ${p.aliases&&p.aliases.length?`<div class="item-aliases">别名：${p.aliases.join('、')}</div>`:''}
+      </div>
+      <span class="item-price">¥${Number(p.price).toFixed(2)}</span>
+      <button class="del-btn" onclick="deleteProduct(${p.id})">×</button>
+    </div>`;
+  }).join('');
+}
+
+function deleteProduct(id){
+  if(!confirm('确认删除？')) return;
+  products = products.filter(p=>p.id!==id);
+  save(); renderList();
+}
+
+document.getElementById('addBtn').addEventListener('click',()=>{
+  const name = document.getElementById('addName').value.trim();
+  const price = parseFloat(document.getElementById('addPrice').value);
+  const aliasRaw = document.getElementById('addAlias').value.trim();
+  if(!name){setStatus('请填写商品名称');return;}
+  if(isNaN(price)||price<0){setStatus('请填写有效价格');return;}
+  const aliases = aliasRaw?aliasRaw.split(/[,，]/).map(s=>s.trim()).filter(Boolean):[];
+  products.push({id:Date.now(),name,aliases,price});
+  save(); renderList();
+  document.getElementById('addName').value='';
+  document.getElementById('addPrice').value='';
+  document.getElementById('addAlias').value='';
+  setStatus('已添加：'+name);
+});
+
+function setStatus(msg){document.getElementById('statusBar').textContent=msg;}
+
+function findProduct(text){
+  text = text.toLowerCase().replace(/\s/g,'');
+  for(const p of products){
+    if(text.includes(p.name.toLowerCase())) return p;
+    for(const a of(p.aliases||[])){
+      if(text.includes(a.toLowerCase())) return p;
+    }
+  }
+  return null;
+}
+
+function speak(text){
+  if(!window.speechSynthesis) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang='zh-CN'; u.rate=0.95; u.pitch=1.05;
+  speechSynthesis.speak(u);
+}
+
+// 语音识别
+const micBtn = document.getElementById('micBtn');
+let recognition=null, isListening=false;
+const SR = window.SpeechRecognition||window.webkitSpeechRecognition;
+
+if(!SR){
+  document.getElementById('noSpeechTip').style.display='block';
+  micBtn.style.opacity='0.4';
+  micBtn.disabled=true;
+}
+
+function createRecognition(){
+  const r = new SR();
+  r.lang='zh-CN';
+  r.continuous=false;
+  r.interimResults=true;
+  r.maxAlternatives=3;
+
+  r.onstart=()=>{
+    isListening=true;
+    micBtn.classList.add('listening');
+    showListening();
+    setStatus('正在听...');
+    document.getElementById('transcript').textContent='';
+  };
+
+  r.onresult=(e)=>{
+    let interim='',final='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      if(e.results[i].isFinal) final+=e.results[i][0].transcript;
+      else interim+=e.results[i][0].transcript;
+    }
+    document.getElementById('transcript').textContent = final||interim;
+    if(final){
+      let found=null;
+      outer: for(let i=e.resultIndex;i<e.results.length;i++){
+        for(let j=0;j<e.results[i].length;j++){
+          found=findProduct(e.results[i][j].transcript);
+          if(found) break outer;
+        }
+      }
+      if(found){showResult(found);setStatus('');}
+      else{showNotFound(final);setStatus('');}
+    }
+  };
+
+  r.onerror=(e)=>{
+    const msgs={'not-allowed':'请允许麦克风权限','no-speech':'没有听到声音，请重试','network':'网络错误'};
+    setStatus(msgs[e.error]||'识别出错，请重试');
+    micBtn.classList.remove('listening');
+    isListening=false;
+    showIdle();
+  };
+
+  r.onend=()=>{
+    micBtn.classList.remove('listening');
+    isListening=false;
+  };
+  return r;
+}
+
+function startListen(){
+  if(!SR||isListening) return;
+  recognition=createRecognition();
+  try{recognition.start();}catch(e){setStatus('启动失败，请重试');}
+}
+function stopListen(){
+  if(recognition&&isListening){try{recognition.stop();}catch(e){}}
+}
+
+micBtn.addEventListener('mousedown', startListen);
+micBtn.addEventListener('mouseup', stopListen);
+micBtn.addEventListener('mouseleave', stopListen);
+micBtn.addEventListener('touchstart',(e)=>{e.preventDefault();startListen();},{passive:false});
+micBtn.addEventListener('touchend',(e)=>{e.preventDefault();stopListen();},{passive:false});
+
+renderList();
+showIdle();
+</script>
+</body>
+</html>
